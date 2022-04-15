@@ -1,0 +1,3 @@
+[submodule "MAGUS_CP"]
+	path = MAGUS_CP
+	url = git@github.com:wulfdewolf/MAGUS_CP.git

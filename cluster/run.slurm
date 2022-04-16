@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=MAGUS
-#SBATCH --ntasks=4
-#SBTACH --cpus-per-task=16
+#SBATCH --ntasks=5
+#SBTACH --cpus-per-task=4
 
 module load Python/3.9.5-GCCcore-10.3.0
 module load parallel/20210622-GCCcore-10.3.0
@@ -9,14 +9,14 @@ module load parallel/20210622-GCCcore-10.3.0
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Define srun arguments
-srun = "srun -N1 -n16 --exclusive"
+srun = "srun -N1 -n4 --exclusive"
 
 # Define parallel arguments
-parallel="parallel -N 1 -j $SLURM_NTASKS --joblog runtask.log --resume"
+parallel1="parallel --delay 0.2 -N 1 -j $SLURM_NTASKS --joblog runtask.log --resume"
 
 # Make unaligned data
 if [ ! -d data/unaligned ]; then
-    $parallel "$srun awk '{ if ($0 !~ /^>/) { gsub(/-/, "", $0); } print $0; }' data/aligned/{} > data/unaligned/{}" ::: $(ls -1 data/aligned) 
+    $parallel "$srun sed '/>/! s/-//g' data/aligned/{} > data/unaligned/{.}_scrambled.fasta" ::: $(ls -1 data/aligned) 
 
 #-
 # Default tracemethod runs (tracemethod)

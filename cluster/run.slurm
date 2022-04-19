@@ -1,32 +1,41 @@
 #!/bin/bash
 #SBATCH --job-name=MAGUS
-#SBATCH --ntasks=5
+#SBATCH --ntasks=6
 #SBTACH --cpus-per-task=4
+#SBATCH --mem-per-cpu=2G
 
-module load Python/3.9.5-GCCcore-10.3.0
-module load parallel/20210622-GCCcore-10.3.0
+module load Python/3.8.6-GCCcore-10.2.0
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
-# Define srun arguments
-srun = "srun -N1 -n4 --exclusive"
+# Cwd
+cd ~/MAGUS_project
 
-# Define parallel arguments
-parallel1="parallel --delay 0.2 -N 1 -j $SLURM_NTASKS --joblog runtask.log --resume"
+# Env
+virtualenv --system-site-packages /tmp/env
+source /tmp/env/bin/activate
+python -m pip install --upgrade pip
+
+# Reqs
+python -m pip install -r data/requirements.txt
 
 # Make unaligned data
 if [ ! -d data/unaligned ]; then
-    $parallel "$srun sed '/>/! s/-//g' data/aligned/{} > data/unaligned/{.}_scrambled.fasta" ::: $(ls -1 data/aligned) 
+    mkdir data/unaligned
+    ./parallel --delay 0.2 -N 1 -j $SLURM_NTASKS --joblog runtask.log --resume "srun -n1 -c4 sed '/>/! s/-//g' data/aligned/{} > data/unaligned/{.}_scrambled.fasta" ::: $(ls -1 data/aligned) 
+    wait
+fi
 
 #-
 # Default tracemethod runs (tracemethod)
 #-
 
-$parallel "$srun python3 MAGUS_CP/magus.py -i data/unaligned/{} -d results/{.} -o magus_result_minclusters.txt" ::: $(ls -1 data/unaligned) 
-
+./parallel --delay 0.2 -N 1 -j $SLURM_NTASKS --joblog runtask.log --resume "srun -n1 -c4 python3 MAGUS_CP/magus.py -i data/unaligned/{} -d results/{.} -o results/{.}/magus_result_minclusters.txt" ::: $(ls -1 data/unaligned) 
+wait
 
 #-
 # Other tracemethod runs (fm, mwtgreedy, rg, mwtsearch)
 #-
 
-$parallel "$srun python3 MAGUS_CP/magus.py -d results/{1.} -o magus_result_{2}.txt  --graphtracemethod {2}" ::: $(ls -1 data/unaligned) ::: "fm" "mwtgreedy" "rg" "mwtsearch"
+./parallel --delay 0.2 -N 1 -j $SLURM_NTASKS --joblog runtask.log --resume "srun -n1 -c4 python3 MAGUS_CP/magus.py -d results/{1.} -o results/{1.}/magus_result_{2}.txt  --graphtracemethod {2}" ::: $(ls -1 data/unaligned) ::: "fm" "mwtgreedy" "rg" "mwtsearch"
+wait

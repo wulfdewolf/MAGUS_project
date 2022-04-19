@@ -9,6 +9,9 @@ unzip data/download
 # Cleanup
 rm -rf data/download
 
+# Make aligned folder
+mkdir data/aligned
+
 # Copy to aligned
 for file in $(ls data/Datasets/balibase); do
     cp data/Datasets/balibase/$file/model/true.fasta data/aligned/${file}_true.fasta

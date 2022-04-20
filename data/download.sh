@@ -4,7 +4,7 @@
 wget -P data https://databank.illinois.edu/datafiles/u373n/download
 
 # Unzip
-unzip data/download 
+unzip data/download -d data
 
 # Cleanup
 rm -rf data/download

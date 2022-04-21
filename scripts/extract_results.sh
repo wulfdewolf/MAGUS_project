@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Loop over results
+for msa in $(ls -1 results); do
+
+    # Extract trace methods
+    trace_methods=$(cat results/$msa/log.txt | grep '\-\-graphtracemethod' | sed 's/^.*method //' | sed ':a;N;$!ba;s/\n/,/g')
+    IFS=','
+    read -a trace_methods_arr <<< "$trace_methods"
+
+    # Extract trace running times
+    trace_times=$(cat results/$msa/log.txt | grep 'alignment graph trace in' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?' | grep '\.' | sed ':a;N;$!ba;s/\n/,/g')
+    IFS=','
+    read -a trace_times_arr <<< "$trace_times"
+
+    ## Extract total running times
+    run_times=$(cat results/$msa/log.txt | grep 'MAGUS finished in' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?' | grep '\.' | sed ':a;N;$!ba;s/\n/,/g')
+    IFS=','
+    read -a run_times_arr <<< "$run_times"
+
+    ## Save results
+    rm results/$msa/times_and_results.csv
+    for index in "${!trace_methods_arr[@]}"; do
+        printf "${trace_methods_arr[$index]},${trace_times_arr[$index]},${run_times_arr[$index]}\n" >> results/${msa}/times_and_results.csv
+    done
+done

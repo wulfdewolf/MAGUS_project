@@ -35,7 +35,7 @@ for file in $(ls -1 data/unaligned); do
 	# Default tracemethod runs (tracemethod)
 	#-
 
-	python MAGUS_CP/magus.py --numprocs 24 -i data/unaligned/${file} -d results/${filename} -o results/${filename}/magus_result_minclusters.txt
+	python MAGUS_CP/magus.py --numprocs 24 -i data/unaligned/${file} -d results/${filename} -o results/${filename}/magus_result_minclusters.txt --graphtracemethod minclusters
 
 	#-
 	# Other tracemethod runs (fm, mwtgreedy, rg, mwtsearch)

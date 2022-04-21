@@ -21,6 +21,14 @@ for msa in $(ls -1 results); do
     ## Save results
     rm results/$msa/times_and_results.csv
     for index in "${!trace_methods_arr[@]}"; do
-        printf "${trace_methods_arr[$index]},${trace_times_arr[$index]},${run_times_arr[$index]}\n" >> results/${msa}/times_and_results.csv
+
+        # Calculate scores
+        fastsp_output=$(java -jar tools/FastSP.jar -r data/aligned/${msa}_true.fasta -e results/${msa}/magus_result_${trace_methods_arr[$index]}.txt)
+        SPFN=$(echo "$fastsp_output" | grep 'SPFN' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+        SPFP=$(echo "$fastsp_output" | grep 'SPFP' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+
+        # Write results
+        # method, trace running time, total running time, SPFN, SPFP
+        printf "${trace_methods_arr[$index]},${trace_times_arr[$index]},${run_times_arr[$index]},${SPFN},${SPFP}\n" >> results/${msa}/times_and_results.csv
     done
 done

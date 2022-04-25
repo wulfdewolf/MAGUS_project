@@ -29,6 +29,6 @@ for msa in $(ls -1 results); do
 
         # Write results
         # msa name, method, trace running time, total running time, SPFN, SPFP
-        printf "${msa},${trace_methods_arr[$index]},${trace_times_arr[$index]},${run_times_arr[$index]},${SPFN},${SPFP}\n" >> results/results.csv
+        printf "${msa},${trace_methods_arr[$index]},${trace_times_arr[$index]},${run_times_arr[$index]},${SPFN},${SPFP}\n" >> results.csv
     done
 done

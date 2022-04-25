@@ -36,13 +36,21 @@ for file in $(ls -1 data/unaligned); do
 	#-
 
 	python MAGUS_CP/magus.py --numprocs 24 -i data/unaligned/${file} -d results/${filename} -o results/${filename}/magus_result_minclusters.txt --graphtracemethod minclusters
+	mv results/${filename}/graph/trace.txt results/${filename}/graph/trace_minclusters.txt
 
 	#-
 	# Other tracemethod runs (fm, mwtgreedy, rg, mwtsearch)
 	#-
 
 	python MAGUS_CP/magus.py --numprocs 24 -d results/${filename} -o results/${filename}/magus_result_fm.txt --graphtracemethod fm
+	mv results/${filename}/graph/trace.txt results/${filename}/graph/trace_fm.txt
+
 	python MAGUS_CP/magus.py --numprocs 24 -d results/${filename} -o results/${filename}/magus_result_mwtgreedy.txt --graphtracemethod mwtgreedy
+	mv results/${filename}/graph/trace.txt results/${filename}/graph/trace_mwtgreedy.txt
+
 	python MAGUS_CP/magus.py --numprocs 24 -d results/${filename} -o results/${filename}/magus_result_rg.txt --graphtracemethod rg 
+	mv results/${filename}/graph/trace.txt results/${filename}/graph/trace_rg.txt
+	
 	python MAGUS_CP/magus.py --numprocs 24 -d results/${filename} -o results/${filename}/magus_result_mwtsearch.txt --graphtracemethod mwtsearch 
+	mv results/${filename}/graph/trace.txt results/${filename}/graph/trace_mwtsearch.txt
 done

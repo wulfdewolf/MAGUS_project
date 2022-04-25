@@ -28,7 +28,7 @@ for msa in $(ls -1 results); do
         SPFP=$(echo "$fastsp_output" | grep 'SPFP' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
 
         # Write results
-        # method, trace running time, total running time, SPFN, SPFP
-        printf "${trace_methods_arr[$index]},${trace_times_arr[$index]},${run_times_arr[$index]},${SPFN},${SPFP}\n" >> results/${msa}/times_and_results.csv
+        # msa name, method, trace running time, total running time, SPFN, SPFP
+        printf "${msa},${trace_methods_arr[$index]},${trace_times_arr[$index]},${run_times_arr[$index]},${SPFN},${SPFP}\n" >> results/results.csv
     done
 done

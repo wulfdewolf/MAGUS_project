@@ -25,7 +25,7 @@ function int: rasterscan_order(int: row, int: col) = (row-1)*max_cols+col; % Fro
 
 constraint forall(a in 1..nr_alignments, c1 in 1..max_cols-1, c2 in c1+1..max_cols)
   (if cluster_ids[a,c1] != 0 /\ cluster_ids[a,c2] != 0
-  then cluster_ids[a, c] < cluster_ids[a, c+1]
+  then cluster_ids[a, c1] < cluster_ids[a, c2]
   endif);
 
 %% Nodes that were not in the same cluster in the input, cannot be in the same cluster in the output.

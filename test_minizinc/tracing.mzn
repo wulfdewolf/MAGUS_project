@@ -3,8 +3,8 @@ include "globals.mzn";
 par int: nr_alignments;
 par int: max_cols;
 
-par int: max_id = nr_alignments*max_cols; %TODO: can we find a better upper bound of the cluster_id?
-par int: nr_nodes = nr_alignments*max_cols;
+par int: max_id = nr_alignments*max_cols;       %TODO: can we find a better upper bound of the cluster_id?
+                                                % Will  be done in the python code.
 
 array[1..nr_alignments, 1..max_cols] of var 0..max_id: input;
 
@@ -40,6 +40,8 @@ constraint forall (a in 1..nr_alignments, c in 1..max_cols)
         then cluster_ids[a, c] == 0
         else cluster_ids[a,c] != 0 %TODO: maybe > 0 is more efficient?
         endif);
+
+constraint cluster_id[1,1] = 1;
 
 % Solve for the least possible cluster id's assigned.
 solve minimize max(cluster_ids); % TODO: Check if it would be more efficient to only check for the max value of last non-zero values.

@@ -18,8 +18,13 @@ function int: rasterscan_order(int: row, int: col) = (row-1)*max_cols+col; % Fro
 
 % Cluster ids should be ordered such that for all alignments, the higher columns are assigned a higher cluster id. 
 % This is the actual ordering asked by the problem definition.
-constraint forall(a in 1..nr_alignments, c in 1..max_cols-1)
-  (if cluster_ids[a,c+1] != 0
+%% constraint forall(a in 1..nr_alignments, c in 1..max_cols-1)
+%%   (if cluster_ids[a,c+1] != 0
+%%   then cluster_ids[a, c] < cluster_ids[a, c+1]
+%%   endif);
+
+constraint forall(a in 1..nr_alignments, c1 in 1..max_cols-1, c2 in c1+1..max_cols)
+  (if cluster_ids[a,c1] != 0 /\ cluster_ids[a,c2] != 0
   then cluster_ids[a, c] < cluster_ids[a, c+1]
   endif);
 
@@ -41,7 +46,7 @@ constraint forall (a in 1..nr_alignments, c in 1..max_cols)
         else cluster_ids[a,c] != 0 %TODO: maybe > 0 is more efficient?
         endif);
 
-constraint cluster_id[1,1] = 1;
+%constraint cluster_ids[1,1] = 1;
 
 % Solve for the least possible cluster id's assigned.
 solve minimize max(cluster_ids); % TODO: Check if it would be more efficient to only check for the max value of last non-zero values.

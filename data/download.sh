@@ -10,9 +10,11 @@ unzip data/download -d data
 rm -rf data/download
 
 # Make aligned folder
-mkdir data/aligned
+mv data/Datasets data/aligned
 
-# Copy to aligned
-for file in $(ls data/Datasets/balibase); do
-    cp data/Datasets/balibase/$file/model/true.fasta data/aligned/${file}_true.fasta
+# Flatten
+for family in data/aligned/ ; do
+   find "$family" -type f -exec sh -c 'new=$(echo "{}" | tr "/" "-" | tr " " "_"); mv "{}" data/aligned/"$new"' \;
 done
+find data/aligned -type f ! -name "*.fasta" -exec rm {} \;
+rm -rf data/aligned/*/

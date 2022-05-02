@@ -14,4 +14,3 @@ python -m pip install -r scripts/local/requirements.txt
 
 # Cleanup
 deactivate
-rm -rf mv MiniZincIDE-2.6.2-bundle-linux-x86_64 MiniZincIDE-2.6.2-bundle-linux-x86_64.tgz

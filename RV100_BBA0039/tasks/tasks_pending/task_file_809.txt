@@ -1,1 +1,0 @@
-{"taskType": "runAlignmentTask", "outputFile": "/home/wolf/MAGUS_project/res.txt", "taskArgs": {"workingDir": "/home/wolf/MAGUS_project/RV100_BBA0039", "outputFile": "/home/wolf/MAGUS_project/res.txt", "subalignmentPaths": [], "sequencesPath": "/home/wolf/MAGUS_project/data/unaligned/test.fasta", "backbonePaths": [], "guideTree": "fasttree"}}

@@ -3,12 +3,15 @@ from cpmpy import *
 
 nr_alignments = 3
 
-input = np.array([ 1,  2,  3, 1,  2,  3, 3,  1, 0])
-subalignment_start = np.array([0, 3, 6, 9])
+#input = np.array([ 1,  2,  3, 1,  2,  3, 3,  1, 0])
+#subalignment_start = np.array([0, 3, 6, 9])
 
-nr_variables = input[input != 0].size
+input = np.array([1,0,2,3,3,2,0,3,1,2,4])
+subalignment_start = np.array([0,4,7,11])
 
-output = intvar(1, nr_variables,  shape=input.shape, name="output")
+nonzero_input = input[input != 0]
+
+output = intvar(1, nonzero_input.size,  shape=nonzero_input.shape, name="output")
 
 model = Model()
 
@@ -17,18 +20,21 @@ model = Model()
 i = 0
 for a in range(subalignment_start.size - 1):
     for n in range(subalignment_start[a], subalignment_start[a+1]):
+        print("n = " + str(n) + " i = " + str(i))
         if input[n] == 0:
             continue
         else:
             for n1 in range(n+1, subalignment_start[a+1]+1):
-                if input[n] == 0:
-                    continue
-                elif n1 == subalignment_start[a+1] :
+                if n1 == subalignment_start[a+1]:
+                    i += 1
                     break
+                elif input[n1] == 0:
+                    continue
                 else:
                     model += (output[i] < output[i+1])
+                    i += 1
                     break
-            i += 1
+
 
 # nodes having different cluster ids in the input, should also have different cluster ids in the output
 i = 0

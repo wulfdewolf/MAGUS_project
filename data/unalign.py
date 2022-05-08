@@ -14,8 +14,6 @@ if __name__ == "__main__":
 
     # Unalign
     for instance in os.listdir("data/aligned"): 
-        name = instance.split("_true")[0]
-
-        with open("data/unaligned/" + name + "_unaligned.fasta", "w") as f:
+        with open("data/unaligned/" + instance + "_unaligned.fasta", "w") as f:
             for record in SeqIO.parse("data/aligned/" + instance, "fasta"):
-                f.write(str(">" + record.id + "\n" + record.seq.ungap("-")))
+                f.write(str(">" + record.id + "\n" + record.seq.ungap("-")) + "\n")

@@ -13,8 +13,11 @@ rm -rf data/download
 mv data/Datasets data/aligned
 
 # Flatten
-for family in data/aligned/ ; do
-   find "$family" -type f -exec sh -c 'new=$(echo "{}" | tr "/" "-" | tr " " "_"); mv "{}" data/aligned/"$new"' \;
+cd data/aligned
+for family in * ; do
+   echo "$family"
+   find ${family//$'\n'/} -type f -exec sh -c 'new=$(echo "{}" | tr "/" "-" | tr " " "_"); mv "{}" "$new"' \;
 done
+cd ../..
 find data/aligned -type f ! -name "*.fasta" -exec rm {} \;
 rm -rf data/aligned/*/

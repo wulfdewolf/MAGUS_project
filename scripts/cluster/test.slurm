@@ -11,6 +11,9 @@ module load CPMpy/0.9.5-foss-2021a
 # Cwd
 cd ~/MAGUS_project
 
+# Minizinc shared libraries
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/user/brussel/102/vsc10248/MAGUS_project/MAGUS_CP/magus_tools/minizinc/lib
+
 #python MAGUS_CP/magus.py --numprocs 8 
 #                         -i data/unaligned/RV100_BBA0039_unaligned.fasta 
 #                         -d RV100_BBA0039

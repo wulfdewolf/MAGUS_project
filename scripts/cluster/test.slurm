@@ -15,13 +15,13 @@ cd ~/MAGUS_project
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/user/brussel/102/vsc10248/MAGUS_project/MAGUS_CP/magus_tools/minizinc/lib
 
 #python MAGUS_CP/magus.py --numprocs 8 
-#                         -i data/unaligned/RV100_BBA0039_unaligned.fasta 
-#                         -d RV100_BBA0039
-#                         -o RV100_BBA0039/magus_result_minclusters.txt 
+#                         -i $VSC_SCRATCH/data/unaligned/RV100_BBA0039_unaligned.fasta 
+#                         -d $VSC_SCRATCH/RV100_BBA0039
+#                         -o $VSC_SCRATCH/RV100_BBA0039/magus_result_minclusters.txt 
 #                         --graphtracemethod minclusters
 #mv results/RV100_BBA0039/graph/trace.txt results/RV100_BBA0039/graph/trace_minclusters.txt
 
 python MAGUS_CP/magus.py --numprocs 8 
-                         -d RV100_BBA0039 
-                         -o RV100_BBA0039/magus_result_cp.txt 
+                         -d $VSC_SCRATCH/RV100_BBA0039 
+                         -o $VSC_SCRATCH/RV100_BBA0039/magus_result_cp.txt 
                          --graphtracemethod cp

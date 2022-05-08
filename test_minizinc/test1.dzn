@@ -1,5 +1,0 @@
-nr_alignments = 3;
-input_length = 8;
-
-input = [ 1,  2,  3, 1,  2,  3, 3,  1];
-subalignment_start = [1, 4, 7, 9]; % The last one is the first index where no constraint is located

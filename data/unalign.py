@@ -20,18 +20,25 @@ if __name__ == "__main__":
 
     # Verify if aligned folder exists
     if not os.path.isdir(args.inputfolder):
-        print(args.inputfolder + " folder does not exist, run data/download.sh first!")
+        print("ERROR: " +args.inputfolder + " folder does not exist, run data/download.sh first!")
         quit()
     
     # Make unaligned folder
     if os.path.exists(args.outputfolder):
-        print(args.outputfolder + " already exists!")
+        print("ERROR: " +args.outputfolder + " already exists!")
         quit()
            
     os.mkdir(args.outputfolder)
 
+    # Make clipped folder
+    if args.clippedfolder != None and os.path.exists(args.clippedfolder):
+        print("ERROR: " +args.clippedfolder + " already exists!")
+        quit()
+        
+    os.mkdir(args.clippedfolder)
+    
     # Unalign
-    print("instance, nr_sequences, mean_sequence_length")
+    print("instance,nr_sequences,mean_sequence_length")
     for instance in os.listdir("data/aligned"):
         outputfile = args.outputfolder + "/" + instance 
         
@@ -46,7 +53,7 @@ if __name__ == "__main__":
                     record_to_print = record.seq[0:int(args.sequence_length)]
                     
                     if args.clippedfolder != None:
-                        with open(args.clippedfolder, "a") as fc:
+                        with open(args.clippedfolder + "/" + instance, "a") as fc:
                             fc.write(">" + record.id + "\n" + str(record_to_print) + "\n")
                     
                     record_to_print = record_to_print.ungap("-")

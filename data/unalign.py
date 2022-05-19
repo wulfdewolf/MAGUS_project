@@ -9,6 +9,7 @@ if __name__ == "__main__":
     
     argparser.add_argument('--outputfolder'       , dest='outputfolder'      , default="data/unaligned"  , metavar=''   , type=str  , help="The output folder where the instances will be saved.")
     argparser.add_argument('--inputfolder'        , dest='inputfolder'       , default="data/aligned"    , metavar=''   , type=str  , help="The input folder where the aligned instances are located.")
+    argparser.add_argument('--clippedfolder'      , dest='clippedfolder'     , default=None              , metavar=''   , type=str  , help="The folder where the clipped aligned instances are located.")
     argparser.add_argument('--sequence_length'    , dest='sequence_length'   , default=None              , metavar=''   , type=int  , help="If not None, the aligned sequence will be reduced to this number of columns.")
     argparser.add_argument('--min_mean_length'    , dest='min_mean_length'   , default=None              , metavar=''   , type=int  , help="If not None, the instance will only be kept when the mean sequence length is at least this parameter.")
     argparser.add_argument('--max_mean_length'    , dest='max_mean_length'   , default=None              , metavar=''   , type=int  , help="If not None, the instance will only be kept when the mean sequence length is at most this parameter.")
@@ -30,9 +31,9 @@ if __name__ == "__main__":
     os.mkdir(args.outputfolder)
 
     # Unalign
-       
+    print("instance, nr_sequences, mean_sequence_length")
     for instance in os.listdir("data/aligned"):
-        outputfile = args.outputfolder + "/" + instance + "_unaligned.fasta"
+        outputfile = args.outputfolder + "/" + instance 
         
         max_length = 0
         mean_length = 0
@@ -42,7 +43,13 @@ if __name__ == "__main__":
             for record in SeqIO.parse("data/aligned/" + instance, "fasta"):
                 max_length = len(record.seq) if len(record.seq) > max_length else max_length
                 if args.sequence_length != None:
-                    record_to_print = record.seq[0:int(args.sequence_length)].ungap("-")
+                    record_to_print = record.seq[0:int(args.sequence_length)]
+                    
+                    if args.clippedfolder != None:
+                        with open(args.clippedfolder, "a") as fc:
+                            fc.write(">" + record.id + "\n" + str(record_to_print) + "\n")
+                    
+                    record_to_print = record_to_print.ungap("-")
                 else:
                     record_to_print = record.seq.ungap("-")
                     
@@ -59,4 +66,6 @@ if __name__ == "__main__":
             or (args.min_nr_sequences != None and nr_sequences < args.min_nr_sequences) \
             or (args.max_nr_sequences != None and nr_sequences > args.max_nr_sequences):
                 os.remove(outputfile)
+        else:
+            print(instance + "," + str(nr_sequences) + "," +  str(mean_length))
 

@@ -35,7 +35,8 @@ if __name__ == "__main__":
         print("ERROR: " +args.clippedfolder + " already exists!")
         quit()
         
-    os.mkdir(args.clippedfolder)
+
+    #os.mkdir(args.clippedfolder)
     
     # Unalign
     print("instance,nr_sequences,mean_sequence_length")

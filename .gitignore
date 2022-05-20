@@ -1,3 +1,7 @@
 **/**.fasta
 env/
 RV100_BBA0039/
+*.out
+data/aligned
+data/unaligned
+data/results

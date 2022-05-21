@@ -19,5 +19,6 @@ for family in * ; do
    find ${family//$'\n'/} -type f -exec sh -c 'new=$(echo "{}" | tr "/" "-" | tr " " "_"); mv "{}" "$new"' \;
 done
 cd ../..
-find data/aligned -type f ! -name "*.fasta" -exec rm {} \;
+find data/aligned -type f ! -name "*.fasta" ! -name "*align.txt" -exec rm {} \;
+rm data/aligned/*internal*
 rm -rf data/aligned/*/

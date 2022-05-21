@@ -35,6 +35,7 @@ if __name__ == "__main__":
         print("ERROR: " +args.clippedfolder + " already exists!")
         quit()
         
+
     os.mkdir(args.clippedfolder)
     
     # Unalign

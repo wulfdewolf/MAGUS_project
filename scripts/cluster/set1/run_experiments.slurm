@@ -14,6 +14,7 @@ cd ~/MAGUS_project
 DATADIR="/home/wdewolf/MAGUS_project/data/set1"
 
 # Results directory
+# EXPECTS THIS FOLDER TO NOT EXISTS -> rename previous result folders
 RESULTSDIR="${DATADIR}/results"
 mkdir $RESULTSDIR
 
@@ -28,7 +29,7 @@ mkdir $RESULTSDIR/reimplemented/runlims
 for file in $(ls -1 $DATADIR/unaligned); do
 
 	# Filename without extension
-	filename="${file%_unaligned.fasta*}"
+	filename="${file%.fasta*}"
 
 	#-
 	# Original minclusters

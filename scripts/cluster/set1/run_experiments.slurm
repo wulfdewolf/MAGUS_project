@@ -11,12 +11,19 @@ module load Python/3.8.6-GCCcore-10.2.0
 cd ~/MAGUS_project
 
 # Data directory
-DATADIR="/home/wdewolf/MAGUS_project/data"
+DATADIR="/home/wdewolf/MAGUS_project/data/set1"
 
 # Results directory
 RESULTSDIR="${DATADIR}/results"
 mkdir $RESULTSDIR
-mkdir $RESULTSDIR/runlims
+
+# Group directories
+mkdir $RESULTSDIR/original
+mkdir $RESULTSDIR/reimplemented
+
+# Runlims
+mkdir $RESULTSDIR/original/runlims
+mkdir $RESULTSDIR/reimplemented/runlims
 
 for file in $(ls -1 $DATADIR/unaligned); do
 
@@ -27,15 +34,19 @@ for file in $(ls -1 $DATADIR/unaligned); do
 	# Original minclusters
 	#-
 
-	scripts/cluster/runlim -o ${RESULTSDIR}/runlims/${filename}_minclusters_runlim.txt python MAGUS_CP/magus.py --numprocs 16 -i ${DATADIR}/unaligned/${file} -d ${RESULTSDIR}/${filename} -o ${RESULTSDIR}/${filename}/magus_result_minclusters.txt --graphtracemethod minclusters
-	mv ${RESULTSDIR}/${filename}/graph/trace.txt  ${RESULTSDIR}/${filename}/graph/trace_minclusters.txt
+	scripts/cluster/runlim -o ${RESULTSDIR}/original/runlims/${filename}.txt python MAGUS_CP/magus.py --numprocs 16 \
+																										   -i ${DATADIR}/unaligned/${file} \
+																										   -d ${RESULTSDIR}/original/${filename} \
+																										   -o ${RESULTSDIR}/original/${filename}/result.txt \
+																										   --graphtracemethod minclusters
 
 	#-
 	# Reimplemented minclusters
 	#-
 
-	scripts/cluster/runlim -o ${RESULTSDIR}/runlims/${filename}_minclusters_reimplemented_runlim.txt python MAGUS_CP/magus.py --numprocs 16 -d ${RESULTSDIR}/${filename} -o ${RESULTSDIR}/${filename}/magus_result_minclusters_reimplemented.txt --graphtracemethod minclusters_reimplemented
-	mv ${RESULTSDIR}/${filename}/graph/trace.txt  ${RESULTSDIR}/${filename}/graph/trace_minclusters_reimplemented.txt
+	scripts/cluster/runlim -o ${RESULTSDIR}/reimplemented/runlims/${filename}.txt python MAGUS_CP/magus.py --numprocs 16 
+																										   -d ${RESULTSDIR}/reimplemented/${filename} 
+																										   -o ${RESULTSDIR}/reimplemented/${filename}/result.txt 
+																										   --graphtracemethod minclusters_reimplemented
 
 done
-

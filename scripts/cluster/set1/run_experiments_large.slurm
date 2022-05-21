@@ -11,20 +11,17 @@ module load Python/3.8.6-GCCcore-10.2.0
 cd ~/MAGUS_project
 
 # Data directory
+# EXPECTS ONLY LARGE INSTANCES in DATADIR/unaligned
 DATADIR="/home/wdewolf/MAGUS_project/data/set1"
 
 # Results directory
-# EXPECTS THIS FOLDER TO NOT EXISTS -> rename previous result folders
+# EXPECTS THESE FOLDERS TO EXIST:
+# - RESULTSDIR
+# - RESULTSDIR/original
+# - RESULTSDIR/reimplemented
+# - RESULTSDIR/original/runlims
+# - RESULTSDIR/reimplemented/runlims
 RESULTSDIR="${DATADIR}/results"
-mkdir $RESULTSDIR
-
-# Group directories
-mkdir $RESULTSDIR/original
-mkdir $RESULTSDIR/reimplemented
-
-# Runlims
-mkdir $RESULTSDIR/original/runlims
-mkdir $RESULTSDIR/reimplemented/runlims
 
 for file in $(ls -1 $DATADIR/unaligned); do
 
@@ -40,14 +37,17 @@ for file in $(ls -1 $DATADIR/unaligned); do
 																										   -d ${RESULTSDIR}/original/${filename} \
 																										   -o ${RESULTSDIR}/original/${filename}/result.txt \
 																										   --graphtracemethod minclusters
+																										   --maxsubsetsize 0 --maxnumsubsets 50
 
 	#-
 	# Reimplemented minclusters
 	#-
 
 	scripts/cluster/runlim -o ${RESULTSDIR}/reimplemented/runlims/${filename}.txt python MAGUS_CP/magus.py --numprocs 16 
+																										   -i ${DATADIR}/unaligned/${file} \
 																										   -d ${RESULTSDIR}/reimplemented/${filename} 
 																										   -o ${RESULTSDIR}/reimplemented/${filename}/result.txt 
 																										   --graphtracemethod minclusters_reimplemented
+																										   --maxsubsetsize 0 --maxnumsubsets 50
 
 done

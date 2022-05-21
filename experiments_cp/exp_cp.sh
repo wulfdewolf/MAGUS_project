@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CSV_INPUT="../data/unalign_l40_m10_n10.csv"
+CSV_INPUT="../data/unalign_test.csv"
 CSV_OUTPUT="results.csv"
 ALIGNEDFOLDER="../data/data/clipped"
 UNALIGNEDFOLDER="../data/data/unaligned"
@@ -13,7 +13,7 @@ MAXNUMSUBSETS=4
 
 exec < $CSV_INPUT
 #TODO: bijhouden aantal clusters gevonden door MCL
-echo "INSTANCE,NR_SEQUENCES,MEAN_SEQ_LENGTH,NR_CLUSTERS,NR_CLUSTERS_MINCLUSTERS,TIME_TRACING_MINCLUSTERS,NR_SHARED_HOMOLOGIES_MINCLUSTERS,NR_HOMOLOGIES_REF,NR_HOMOLOGIES_MINCLUSTERS,NR_ALIGNED_COLS_REF,NR_ALIGNED_COLS_MINCLUSTERS,SPFN_MINCLUSTERS,SPFP_MINCLUSTERS,NR_CLUSTERS_CP,TIME_TRACING_CP,NR_SHARED_HOMOLOGIES_CP,NR_HOMOLOGIES_CP,NR_ALIGNED_COLS_CP,SPFN_CP,SPFP_CP" > $CSV_OUTPUT
+echo "INSTANCE,NR_SEQUENCES,MEAN_SEQ_LENGTH,NR_CLUSTERS_BEFORE_MINCLUSTERS,NR_CLUSTERS_MINCLUSTERS,TIME_TRACING_MINCLUSTERS,NR_SHARED_HOMOLOGIES_MINCLUSTERS,NR_HOMOLOGIES_REF,NR_HOMOLOGIES_MINCLUSTERS,NR_ALIGNED_COLS_REF,NR_ALIGNED_COLS_MINCLUSTERS,SPFN_MINCLUSTERS,SPFP_MINCLUSTERS,NR_CLUSTERS_CP,TIME_TRACING_CP,NR_SHARED_HOMOLOGIES_CP,NR_HOMOLOGIES_CP,NR_ALIGNED_COLS_CP,SPFN_CP,SPFP_CP" > $CSV_OUTPUT
 read -r header
 
 while read instance nr_seqs mean_seq_length 
@@ -22,17 +22,17 @@ do
   if [[ "$instance" != "instance" ]] 
   then
     echo "instance = $instance, MAXNUMSUBSETS = $MAXNUMSUBSETS, nr_seqs = $nr_seqs"
-    MAXSUBSETSIZE=`expr  $nr_seqs / $MAXNUMSUBSETS + 1`
+    #MAXSUBSETSIZE=`expr  $nr_seqs / $MAXNUMSUBSETS + 1`
     echo "Maxsubsetsize = $MAXSUBSETSIZE"
     echo "Starting with minclusters.."
     # Execute magus with minclusters
-    echo "RUNNING: python ../MAGUS_CP/magus.py --graphtracemethod minclusters --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize $MAXSUBSETSIZE  -o alignments/$instance -d workingdirs/minclusters_$instance -i $UNALIGNEDFOLDER/$instance > outputs/minclusters_$instance.txt"
-    python ../MAGUS_CP/magus.py --graphtracemethod minclusters --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize $MAXSUBSETSIZE  -o alignments/minclusters_$instance -d workingdirs/$instance -i $UNALIGNEDFOLDER/$instance > outputs/minclusters_$instance.txt
+    echo "RUNNING: python ../MAGUS_CP/magus.py --recurse false --graphtracemethod minclusters --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize 0  -o alignments/$instance -d workingdirs/minclusters_$instance -i $UNALIGNEDFOLDER/$instance > outputs/minclusters_$instance.txt"
+    python ../MAGUS_CP/magus.py --recurse false --graphtracemethod minclusters --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize 0  -o alignments/minclusters_$instance -d workingdirs/$instance -i $UNALIGNEDFOLDER/$instance > outputs/minclusters_$instance.txt
     
     # Get values for number of clusters found after trace made, time tracing
-    #NR_CLUSTERS=$(cat outputs/minclusters_$instance.txt | grep -Eo 'Found [+-]?[0-9]+([.][0-9]+)? clean clusters' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
-    #NR_CLUSTERS_MINCLUSTERS=$(cat outputs/minclusters_$instance.txt | grep -Eo 'Found a trace with [+-]?[0-9]+([.][0-9]+)? clusters' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
-    #TIME_TRACING_MINCLUSTERS=$(cat outputs/minclusters_$instance.txt | grep -Eo 'Found alignment graph trace in [+-]?[0-9]+([.][0-9]+)? ' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+    NR_CLUSTERS_BEFORE_MINCLUSTERS=$(cat outputs/minclusters_$instance.txt | grep -Eo 'Found [+-]?[0-9]+([.][0-9]+)? clean clusters' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+    NR_CLUSTERS_MINCLUSTERS=$(cat outputs/minclusters_$instance.txt | grep -Eo 'Found a trace with [+-]?[0-9]+([.][0-9]+)? clusters' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+    TIME_TRACING_MINCLUSTERS=$(cat outputs/minclusters_$instance.txt | grep -Eo 'Found alignment graph trace in [+-]?[0-9]+([.][0-9]+)? ' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
 
 
     echo "Calculating FastSP.."
@@ -51,13 +51,14 @@ do
 
     echo "Starting with CP.."
     # Execute magus with CP
-    echo "RUNNING: python ../MAGUS_CP/magus.py --graphtracemethod cp --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize $MAXSUBSETSIZE  -o alignments/cp_$instance -d workingdirs/$instance -i $UNALIGNEDFOLDER/$instance > outputs/cp_$instance.txt"
-    python ../MAGUS_CP/magus.py --graphtracemethod cp --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize $MAXSUBSETSIZE  -o alignments/cp_$instance -d workingdirs/$instance -i $UNALIGNEDFOLDER/$instance > outputs/cp_$instance.txt
+    echo "RUNNING: python ../MAGUS_CP/magus.py --recurse false --graphtracemethod cp --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize $MAXSUBSETSIZE  -o alignments/cp_$instance -d workingdirs/$instance -i $UNALIGNEDFOLDER/$instance > outputs/cp_$instance.txt"
+    python ../MAGUS_CP/magus.py --recurse false --graphtracemethod cp --maxnumsubsets $MAXNUMSUBSETS --maxsubsetsize 0  -o alignments/cp_$instance -d workingdirs/$instance -i $UNALIGNEDFOLDER/$instance > outputs/cp_$instance.txt
     
     # Get values for number of clusters found after trace made, time tracing
-    #NR_CLUSTERS_CP=$(cat outputs/cp_$instance.txt | grep -Eo 'Found a trace with [+-]?[0-9]+([.][0-9]+)? clusters' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
-    #TIME_TRACING_CP=$(cat outputs/cp_$instance.txt | grep -Eo 'Found alignment graph trace in [+-]?[0-9]+([.][0-9]+)? ' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
-
+    NR_CLUSTERS_BEFORE_CP=$(cat outputs/cp_$instance.txt | grep -Eo 'Found [+-]?[0-9]+([.][0-9]+)? clean clusters' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+    NR_CLUSTERS_CP=$(cat outputs/cp_$instance.txt | grep -Eo 'Found a trace with [+-]?[0-9]+([.][0-9]+)? clusters' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+    TIME_TRACING_CP=$(cat outputs/cp_$instance.txt | grep -Eo 'Found alignment graph trace in [+-]?[0-9]+([.][0-9]+)? ' | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+    
     echo "Calculating FastSP.."
     # Get values from FastSP
     echo "RUNNING: java -jar ../tools/FastSP.jar -r "$ALIGNEDFOLDER/$instance" -e alignments/cp_$instance > outputs/minclusters_FastSP_$instance.txt 2> outputs/cp_FastSP_$instance.txt"
@@ -72,9 +73,8 @@ do
 
     echo "Writing instance."
     # Write values to the output
-    echo "$instance,$nr_seqs,$mean_seq_length,$NR_CLUSTERS,$NR_CLUSTERS_MINCLUSTERS,$TIME_TRACING_MINCLUSTERS,$NR_SHARED_HOMOLOGIES_MINCLUSTERS,$NR_HOMOLOGIES_REF,$NR_HOMOLOGIES_MINCLUSTERS,$NR_ALIGNED_COLS_REF,$NR_ALIGNED_COLS_MINCLUSTERS,$SPFN_MINCLUSTERS,$SPFP_MINCLUSTERS,$NR_CLUSTERS_CP,$TIME_TRACING_CP,$NR_SHARED_HOMOLOGIES_CP,$NR_HOMOLOGIES_CP,$NR_ALIGNED_COLS_CP,$SPFN_CP,$SPFP_CP" >> $CSV_OUTPUT
+    echo "$instance,$nr_seqs,$mean_seq_length,$NR_CLUSTERS_BEFORE_MINCLUSTERS,$NR_CLUSTERS_MINCLUSTERS,$TIME_TRACING_MINCLUSTERS,$NR_SHARED_HOMOLOGIES_MINCLUSTERS,$NR_HOMOLOGIES_REF,$NR_HOMOLOGIES_MINCLUSTERS,$NR_ALIGNED_COLS_REF,$NR_ALIGNED_COLS_MINCLUSTERS,$SPFN_MINCLUSTERS,$SPFP_MINCLUSTERS,$NR_CLUSTERS_BEFORE_CP,$NR_CLUSTERS_CP,$TIME_TRACING_CP,$NR_SHARED_HOMOLOGIES_CP,$NR_HOMOLOGIES_CP,$NR_ALIGNED_COLS_CP,$SPFN_CP,$SPFP_CP" >> $CSV_OUTPUT
   fi
-
 done 
 
 IFS=$OLDIFS

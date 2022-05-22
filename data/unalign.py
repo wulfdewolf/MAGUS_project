@@ -40,7 +40,7 @@ if __name__ == "__main__":
     
     # Unalign
     print("instance,nr_sequences,mean_sequence_length")
-    for instance in os.listdir("data/aligned"):
+    for instance in os.listdir(args.inputfolder):
         outputfile = args.outputfolder + "/" + instance 
         
         max_length = 0

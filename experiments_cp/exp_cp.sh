@@ -10,7 +10,7 @@ UNALIGNEDFOLDER="../data/data/$EXPERIMENT/unaligned"
 OLDIFS=$IFS
 IFS=','
 
-MAXNUMSUBSETS=10
+MAXNUMSUBSETS=8
 [ ! -f $INPUT_CSV ] && { echo "$INPUT_CSV file not found"; exit 99; }
 
 exec < $CSV_INPUT

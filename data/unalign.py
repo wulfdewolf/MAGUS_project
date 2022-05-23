@@ -48,7 +48,7 @@ if __name__ == "__main__":
         nr_sequences = 0
         
         with open(outputfile, "w") as f:
-            for record in SeqIO.parse("data/aligned/" + instance, "fasta"):
+            for record in SeqIO.parse(args.inputfolder + "/" + instance, "fasta"):
                 max_length = len(record.seq) if len(record.seq) > max_length else max_length
                 if args.sequence_length != None:
                     record_to_print = record.seq[0:int(args.sequence_length)]

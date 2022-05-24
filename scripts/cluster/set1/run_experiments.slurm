@@ -15,9 +15,9 @@ DATADIR="/home/wdewolf/MAGUS_project/data/set1"
 
 # Results directory
 # EXPECTS THIS FOLDER TO NOT EXISTS -> rename previous result folders
+RESULTSDIR="${DATADIR}/results"
 if [ ! -d "$DATADIR/results" ]
 then
-	RESULTSDIR="${DATADIR}/results"
 	mkdir $RESULTSDIR
 fi
 
@@ -44,7 +44,13 @@ fi
 for file in $(ls -1 $DATADIR/unaligned); do
 
 	# Filename without extension
-	filename="${file%.fasta*}"
+	if [[ "$file" == *".fasta"* ]]; then
+       filename="${file%.fasta*}"
+	fi
+	if [[ "$file" == *".txt"* ]]; then
+       filename="${file%.txt*}"
+	fi
+
 
 	#-
 	# Original minclusters

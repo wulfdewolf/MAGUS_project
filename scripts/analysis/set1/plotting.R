@@ -15,6 +15,10 @@ for (row in 1:nrow(results)) {
         parts = unlist(strsplit(results[row,"name"], "-"))
         results[row,"name"] = paste(parts[1],parts[2])
         results[row,"error"] = (results[row,"SPFP"] + results[row,"SPFN"]) / 2
+    } else if(grepl("RNA", results[row,"name"], fixed = TRUE)) {
+        parts = unlist(strsplit(results[row,"name"], "-"))
+        results[row,"name"] = paste(parts[1],parts[2])
+        results[row,"error"] = (results[row,"SPFP"] + results[row,"SPFN"]) / 2
     }
 }
 

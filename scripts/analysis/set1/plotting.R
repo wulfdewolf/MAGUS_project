@@ -9,17 +9,33 @@ results <- read.csv(file = "./scripts/analysis/set1/results.csv")
 results$group <- 0
 results$error <- 0
 
+# Lengths of longs
+lengths <- c("5489",  # 3
+             "24246"  # ALL
+             "7350",  # M
+             "5548")  # T
+
 # Split and calculate avg score
 for (row in 1:nrow(results)) {
-    if(grepl("ROSE", results[row,"name"], fixed = TRUE)){
+    if(grepl("10000", results[row,"name"], fixed = TRUE) || grepl("Gutel", results[row,"name"], fixed = TRUE)) {
+        results[row,"group"] = "long"
         parts = unlist(strsplit(results[row,"name"], "-"))
         results[row,"name"] = paste(parts[1],parts[2])
-        results[row,"error"] = (results[row,"SPFP"] + results[row,"SPFN"]) / 2
-    } else if(grepl("RNA", results[row,"name"], fixed = TRUE)) {
+        if(grepl("3", results[row,"name"], fixed = TRUE)) {
+            results[row,"name"] = paste(results[row,"name"], "(5489)")
+        } else if(grepl("ALL", results[row,"name"], fixed = TRUE)) {
+            results[row,"name"] = paste(results[row,"name"], " (24246)")
+        } else if(grepl("M", results[row,"name"], fixed = TRUE)) {
+            results[row,"name"] = paste(results[row,"name"], " (7350)")
+        } else if(grepl("T", results[row,"name"], fixed = TRUE)) {
+            results[row,"name"] = paste(results[row,"name"], " (5548)")
+        }
+    } else {
         parts = unlist(strsplit(results[row,"name"], "-"))
         results[row,"name"] = paste(parts[1],parts[2])
-        results[row,"error"] = (results[row,"SPFP"] + results[row,"SPFN"]) / 2
+        results[row,"group"] = "short"
     }
+    results[row,"error"] = (results[row,"SPFP"] + results[row,"SPFN"]) / 2
 }
 
 ## Summarizes data.
@@ -66,28 +82,28 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 }
 
 # Barplot for running time
-ggplot(data=summarySE(results, measurevar="run_time", groupvars=c("name", "method")), aes(x=name, y=run_time, group=method, fill=method)) +
+ggplot(data=summarySE(results[results$group=="long",], measurevar="run_time", groupvars=c("name", "method")), aes(x=name, y=run_time, group=method, fill=method)) +
     geom_bar(position = "dodge", stat = "summary", fun=mean) +
     geom_errorbar(aes(ymin=run_time-se, ymax=run_time+se), width=.2,position=position_dodge(.9)) +
     labs(x="Instance", y="Running time (s)", fill="Trace finding method: ") +
     theme(legend.position="top") +
     scale_fill_brewer(palette="Set3")
-ggsave("./scripts/analysis/set1/plots/set1_small_time.pdf", device = "pdf", width = 30, height = 18, units = "cm")
+ggsave("./scripts/analysis/set1/plots/set1_large_time.pdf", device = "pdf", width = 30, height = 18, units = "cm")
 
 # Barplot for memory
-ggplot(data=summarySE(results, measurevar="memory", groupvars=c("name", "method")), aes(x=name, y=memory, group=method, fill=method)) +
+ggplot(data=summarySE(results[results$group=="long",], measurevar="memory", groupvars=c("name", "method")), aes(x=name, y=memory, group=method, fill=method)) +
     geom_bar(position = "dodge", stat = "summary", fun=mean) +
     geom_errorbar(aes(ymin=memory-se, ymax=memory+se), width=.2,position=position_dodge(.9)) +
     labs(x="Instance", y="Max used memory (MB)", fill="Trace finding method: ") +
     theme(legend.position="top") +
     scale_fill_brewer(palette="Set3")
-ggsave("./scripts/analysis/set1/plots/set1_small_memory.pdf", device = "pdf", width = 30, height = 18, units = "cm")
+ggsave("./scripts/analysis/set1/plots/set1_large_memory.pdf", device = "pdf", width = 30, height = 18, units = "cm")
 
 # Barplot for error
-ggplot(data=summarySE(results, measurevar="error", groupvars=c("name", "method")), aes(x=name, y=error, group=method, fill=method)) +
+ggplot(data=summarySE(results[results$group=="long",], measurevar="error", groupvars=c("name", "method")), aes(x=name, y=error, group=method, fill=method)) +
     geom_bar(position = "dodge", stat = "summary", fun=mean) +
     geom_errorbar(aes(ymin=error-se, ymax=error+se), width=.2,position=position_dodge(.9)) +
     labs(x="Instance", y=expression(frac("SPFP + SPFN", "2")), fill="Trace finding method: ") +
     theme(legend.position="top") +
     scale_fill_brewer(palette="Set3")
-ggsave("./scripts/analysis/set1/plots/set1_small_error.pdf", device = "pdf", width = 30, height = 18, units = "cm")
+ggsave("./scripts/analysis/set1/plots/set1_large_error.pdf", device = "pdf", width = 30, height = 18, units = "cm")

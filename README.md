@@ -1,4 +1,4 @@
-# Bioinformatics Project: MAGUS x Constraint Programming
+# MAGUSCP: Multiple sequence Alignment using Graph clUStering through Constraint Programming
 
 Project for the Advanced Methods in Bioinformatics course at [VUB](www.vub.be).
 
@@ -40,10 +40,10 @@ Run the [`download.sh`](data/download.sh) script to download the data:
 
 The aligned data is downloaded to `data/aligned`.
 
-Run the [`unalign.py`](data/unalign.py) script to unalign the data:
+Run the [`unalign.py`](data/unalign.py) script using the required options to unalign the data:
 
 ```console
-python data/unalign.py
+python data/unalign.py --help
 ```
 
 The unaligned data is saved in `data/unaligned`.
@@ -60,6 +60,6 @@ python MAGUS_CP/magus.py --help
 
 The scripts that were used to produce the results presented in the article can be found in the [`scripts/cluster`](scripts/cluster) folder.  
 
-**Warning:** During research all evaluations were ran on the [VUB AI lab HPC](https://comopc3.vub.ac.be/), running them locally can take a long time and a lot of memory.
+**Warning:** During research, all evaluations were ran on the [VUB AI lab HPC](https://comopc3.vub.ac.be/), running them locally can take a long time and a lot of memory.
 
 If for some reason you want the results in `.csv` format or if you have questions, feel free to contact us via e-mail.

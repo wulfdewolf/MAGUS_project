@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=MAGUS
-#SBATCH --time=5-00:00:00
+#SBATCH --time=4-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
@@ -11,7 +11,7 @@ module load Python/3.8.6-GCCcore-10.2.0
 cd ~/MAGUS_project
 
 # Data directory
-DATADIR="/home/wdewolf/MAGUS_project/data/set1"
+DATADIR="/scratch/brussel/102/vsc10248/data/set1"
 
 # Results directory
 # EXPECTS THIS FOLDER TO NOT EXISTS -> rename previous result folders
@@ -41,42 +41,39 @@ then
 	mkdir $RESULTSDIR/reimplemented/runlims
 fi
 
-for file in $(ls -1 $DATADIR/unaligned); do
-
-	# Filename without extension
-	if [[ "$file" == *".fasta"* ]]; then
+# Filename without extension
+file=FILENAME
+if [[ "$file" == *".fasta"* ]]; then
        filename="${file%.fasta*}"
-	fi
-	if [[ "$file" == *".txt"* ]]; then
+fi
+if [[ "$file" == *".txt"* ]]; then
        filename="${file%.txt*}"
-	fi
+fi
 
+#-
+# Original minclusters
+#-
 
-	#-
-	# Original minclusters
-	#-
+if [ ! -d "$RESULTSDIR/original/${filename}" ]
+then
+	scripts/cluster/runlim -o ${RESULTSDIR}/original/runlims/${filename}.txt python MAGUS_CP/magus.py --numprocs 1 \
+			                                                                                  		  -i ${DATADIR}/unaligned/${file} \
+													                                                  -d ${RESULTSDIR}/original/${filename} \
+													                                                  -o ${RESULTSDIR}/original/${filename}/result.txt \
+													                                                  #--maxsubsetsize 0 --maxnumsubsets 50 \
+													                                                  --graphtracemethod minclusters
+fi
 
-	if [ ! -d "$RESULTSDIR/original/${filename}" ]
-	then
-		scripts/cluster/runlim -o ${RESULTSDIR}/original/runlims/${filename}.txt python MAGUS_CP/magus.py --numprocs 16 \
-																										  -i ${DATADIR}/unaligned/${file} \
-																										  -d ${RESULTSDIR}/original/${filename} \
-																										  -o ${RESULTSDIR}/original/${filename}/result.txt \
-																										  #--maxsubsetsize 0 --maxnumsubsets 50 \
-																										  --graphtracemethod minclusters
-	fi
+#-
+# Reimplemented minclusters
+#-
 
-	#-
-	# Reimplemented minclusters
-	#-
-
-	if [ ! -d "$RESULTSDIR/reimplemented/${filename}" ]
-	then
-		scripts/cluster/runlim -o ${RESULTSDIR}/reimplemented/runlims/${filename}.txt python MAGUS_CP/magus.py --numprocs 16 \
-																											   -i ${DATADIR}/unaligned/${file} \
-																											   -d ${RESULTSDIR}/reimplemented/${filename} \
-																											   -o ${RESULTSDIR}/reimplemented/${filename}/result.txt \
-																										  	   #--maxsubsetsize 0 --maxnumsubsets 50 \
-																											   --graphtracemethod minclusters_reimplemented
-	fi
-done
+if [ ! -d "$RESULTSDIR/reimplemented/${filename}" ]
+then
+	scripts/cluster/runlim -o ${RESULTSDIR}/reimplemented/runlims/${filename}.txt python MAGUS_CP/magus.py --numprocs 1 \
+													       -i ${DATADIR}/unaligned/${file} \
+													       -d ${RESULTSDIR}/reimplemented/${filename} \
+													       -o ${RESULTSDIR}/reimplemented/${filename}/result.txt \
+													       #--maxsubsetsize 0 --maxnumsubsets 50 \
+													       --graphtracemethod minclusters_reimplemented
+fi

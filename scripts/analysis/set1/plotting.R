@@ -18,7 +18,7 @@ lengths <- c("5489",  # 3
 # Split and calculate avg score
 for (row in 1:nrow(results)) {
     if(grepl("10000", results[row,"name"], fixed = TRUE) || grepl("Gutel", results[row,"name"], fixed = TRUE)) {
-        results[row,"group"] = "long"
+        results[row,"group"] = "large"
         parts = unlist(strsplit(results[row,"name"], "-"))
         results[row,"name"] = paste(parts[1],parts[2])
         if(grepl("3", results[row,"name"], fixed = TRUE)) {
@@ -82,28 +82,28 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 }
 
 # Barplot for running time
-ggplot(data=summarySE(results[results$group=="long",], measurevar="run_time", groupvars=c("name", "method")), aes(x=name, y=run_time, group=method, fill=method)) +
+ggplot(data=summarySE(results[results$group=="large",], measurevar="run_time", groupvars=c("name", "method")), aes(x=name, y=run_time, group=method, fill=method)) +
     geom_bar(position = "dodge", stat = "summary", fun=mean) +
     geom_errorbar(aes(ymin=run_time-se, ymax=run_time+se), width=.2,position=position_dodge(.9)) +
     labs(x="Instance", y="Running time (s)", fill="Trace finding method: ") +
-    theme(legend.position="top") +
+    theme(legend.position="none") +
     scale_fill_brewer(palette="Set3")
 ggsave("./scripts/analysis/set1/plots/set1_large_time.pdf", device = "pdf", width = 30, height = 18, units = "cm")
 
 # Barplot for memory
-ggplot(data=summarySE(results[results$group=="long",], measurevar="memory", groupvars=c("name", "method")), aes(x=name, y=memory, group=method, fill=method)) +
+ggplot(data=summarySE(results[results$group=="short",], measurevar="memory", groupvars=c("name", "method")), aes(x=name, y=memory, group=method, fill=method)) +
     geom_bar(position = "dodge", stat = "summary", fun=mean) +
     geom_errorbar(aes(ymin=memory-se, ymax=memory+se), width=.2,position=position_dodge(.9)) +
     labs(x="Instance", y="Max used memory (MB)", fill="Trace finding method: ") +
     theme(legend.position="top") +
     scale_fill_brewer(palette="Set3")
-ggsave("./scripts/analysis/set1/plots/set1_large_memory.pdf", device = "pdf", width = 30, height = 18, units = "cm")
+ggsave("./scripts/analysis/set1/plots/set1_small_memory.pdf", device = "pdf", width = 30, height = 18, units = "cm")
 
 # Barplot for error
-ggplot(data=summarySE(results[results$group=="long",], measurevar="error", groupvars=c("name", "method")), aes(x=name, y=error, group=method, fill=method)) +
+ggplot(data=summarySE(results[results$group=="short",], measurevar="error", groupvars=c("name", "method")), aes(x=name, y=error, group=method, fill=method)) +
     geom_bar(position = "dodge", stat = "summary", fun=mean) +
     geom_errorbar(aes(ymin=error-se, ymax=error+se), width=.2,position=position_dodge(.9)) +
     labs(x="Instance", y=expression(frac("SPFP + SPFN", "2")), fill="Trace finding method: ") +
     theme(legend.position="top") +
     scale_fill_brewer(palette="Set3")
-ggsave("./scripts/analysis/set1/plots/set1_large_error.pdf", device = "pdf", width = 30, height = 18, units = "cm")
+ggsave("./scripts/analysis/set1/plots/set1_small_error.pdf", device = "pdf", width = 30, height = 18, units = "cm")

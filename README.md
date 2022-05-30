@@ -60,6 +60,6 @@ python MAGUS_CP/magus.py --help
 
 The scripts that were used to produce the results presented in the [`article`](article.pdf) can be found in the [`scripts/cluster`](scripts/cluster) folder.  
 
-**Warning:** During research, all evaluations were ran on the [VUB AI lab HPC](https://comopc3.vub.ac.be/), running them locally can take a long time and a lot of memory.
+**Warning:** During research, all evaluations were ran on the [VUB Hydra HPC](https://hpc.vub.be/), running them locally can take a long time and a lot of memory.
 
 If for some reason you want the results in `.csv` format or if you have questions, feel free to contact us via e-mail.
